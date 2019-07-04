@@ -1,0 +1,29 @@
+                <div class="container">
+                    {loop="$products"}
+                    <!-- /.col -->
+                    <div class="col-md-4 text-center col-sm-6 col-xs-6">
+                            <div class="thumbnail product-box">
+                                <img src="{$value.desphoto}" alt="">
+                                <div class="caption">
+                                    <h3><a href="/products/{$value.desurl}">{$value.desproduct}</a></h3>
+                                    <p>Price : <strong>R$&nbsp;{function="formatPrice($value.vlprice)"}</strong>  </p>
+                                    <p>Ptional dismiss button in tional dismiss button in   </p>
+                                    <p><a href="#" class="btn btn-success" role="button">Comprar</a> <a href="#" class="btn btn-primary" role="button">Detelhes</a></p>
+                                </div>
+                            </div>
+                    </div>
+                    <!-- /.col -->
+                    {/loop}
+                    <!-- /.row -->
+                    <div class="row">
+                        <ul class="pagination alg-right-pad">
+                        {loop="$pages"}
+                            <li><a href="{$value.link}">{$value.page}</a></li>
+                        {/loop}
+                        </ul>
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <div class="col-md-12 download-app-box text-center">
+                        {$category.descategory}                
+                </div>
