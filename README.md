@@ -1,5 +1,5 @@
-# Projeto E-commerce
+# Projeto E-commerce curso PHP 7 HcodeBR
 
 Projeto desenvolvido do zero no [Curso de PHP 7].
 
-Template usado no projeto.# virtualstore
+Projeto utiliza: RainTPL, SlimFramework e PHPMailer.

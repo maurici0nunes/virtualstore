@@ -14,5 +14,3 @@ require_once("site.php");
 require_once("admin.php");
 
 $app->run();
-
- ?>
