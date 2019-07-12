@@ -55,7 +55,20 @@
         </div>
       </div>
 
-      <a href="#" class="btn btn-success" style="float: right" role="button">Comprar</a>
+      <div class="row">
+        <div class="col-sm-6 col-sm-offset-6">
+
+          <form class="form-inline text-right" action="/cart/{$product.idproduct}/add" method="GET">
+            <div class="form-group">
+              <input class="form-control" type="number" name="qtd" title="Quantidade" size="4" value="1" min="1" max="10">
+              <button type="submit" class="btn btn-success">
+                <span class="glyphicon glyphicon-shopping-cart"></span>Adicionar
+              </button>
+            </div>
+          </form>
+
+        </div>
+      </div>
 
     </div>
   </div>

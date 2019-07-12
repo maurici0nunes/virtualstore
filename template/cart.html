@@ -4,12 +4,49 @@
     <div class="col-sm-12">
       <table class="table table-striped">
         <tr>
-          <th></th>
+          <th>&nbsp;</th>
+          <th>FOTO</th>
+          <th>PRODUTO</th>
+          <th>PRE&Ccedil;O</th>
+          <th>QUANTIDADE</th>
+          <th>TOTAL</th>
         </tr>
         <tbody>
+          {loop="$products"}
           <tr>
-            <td></td>
+            <td class="text-center" style="vertical-align: middle;">
+              <a href="/cart/{$value.idproduct}/remove" class="btn btn-danger">
+                <span class="glyphicon glyphicon-remove text-white"></span></a>
+            </td>
+            <td style="vertical-align: middle;">
+              <a href="/products/{$value.desurl}"><img class="img-thumbnail" height="120" width="120" src="{$value.desphoto}" alt="{$value.desproduct}"></a>
+            </td>
+            <td style="vertical-align: middle;">
+              {$value.desproduct}
+            </td>
+            <td style="vertical-align: middle;">
+              R$&nbsp;{function="formatPrice($value.vlprice)"}
+            </td>
+            <td style="vertical-align: middle;">
+              <div style="width: 150px;">
+                <div class="input-group">
+                  <span class="input-group-btn">
+                    <button class="btn btn-danger" type="button" onclick="window.location.href='/cart/{$value.idproduct}/minus'">
+                      <span class="glyphicon glyphicon-minus"></span></button>
+                  </span>
+                  <input type="text" class="form-control" value="{$value.nrqtd}">
+                  <span class="input-group-btn">
+                    <button class="btn btn-info" type="button" onclick="window.location.href='/cart/{$value.idproduct}/add'">
+                      <span class="glyphicon glyphicon-plus"></span></button>
+                  </span>
+                </div>
+              </div>
+            </td>
+            <td style="vertical-align: middle;">
+              <strong>R$&nbsp;{function="formatPrice($value.vltotal)"}</strong>
+            </td>
           </tr>
+          {/loop}
         </tbody>
       </table>
     </div>
@@ -17,9 +54,22 @@
   <div class="row">
     <div class="col-sm-6">
 
+      <h3>CÁLCULO DO FRETE</h3>
+
+      <form class="form-inline">
+        <div class="form-group">
+          <label for="exampleInputName2">CEP:
+          </label>
+          <input type="text" class="form-control" placeholder="00000-000">
+        </div>
+        <button type="submit" class="btn btn-warning">CÁLCULAR</button>
+      </form>
+
     </div>
     <div class="col-sm-6">
-        
+
+      <h3>RESUMO DA COMPRA</h3>
+
     </div>
   </div>
 

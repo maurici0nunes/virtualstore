@@ -235,10 +235,10 @@
                         <div class="thumbnail product-box">
                             <img src="{$value.desphoto}" alt="Imagem{$value.idproduct}" />
                             <div class="caption">
-                                <h3><a href="/products/{$value.desurl}">{$value.desproduct}</a></h3>
-                                <p>Pre&ccedil;o : <strong>R$&nbsp;{function="formatPrice($value.vlprice)"}</strong>  </p>
-                                <p>Descrição do produto</p>
-                                <p><a href="#" class="btn btn-success" role="button">Comprar</a> <a href="/products/{$value.desurl}" class="btn btn-primary" role="button">Detalhes</a></p>
+                                <h4><a href="/products/{$value.desurl}">{$value.desproduct}</a></h4>
+                                <p>Pre&ccedil;o : <strong>R$&nbsp;{function="formatPrice($value.vlprice)"}</strong></p>
+                                <p><a href="/cart/{$value.idproduct}/add" class="btn btn-success" role="button"><span class="glyphicon glyphicon-shopping-cart"></span>Comprar</a>
+                                    <a href="/products/{$value.desurl}" class="btn btn-primary" role="button">Detalhes</a></p>
                             </div>
                         </div>
                     </div>
@@ -251,7 +251,6 @@
                         <li><a href="{$value.link}">{$value.page}</a></li>
                         {/loop}
                     </ul>
-
                 </div>
                 <!-- /.row -->
             </div>
