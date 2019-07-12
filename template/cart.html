@@ -56,11 +56,11 @@
 
       <h3>CÁLCULO DO FRETE</h3>
 
-      <form class="form-inline">
+      <form action="/cart/freight" method="POST" class="form-inline">
         <div class="form-group">
           <label for="exampleInputName2">CEP:
           </label>
-          <input type="text" class="form-control" placeholder="00000-000">
+          <input type="text" class="form-control" placeholder="00000-000" value="{$cart.deszipcode}" name="zipcode">
         </div>
         <button type="submit" class="btn btn-warning">CÁLCULAR</button>
       </form>
@@ -69,6 +69,21 @@
     <div class="col-sm-6">
 
       <h3>RESUMO DA COMPRA</h3>
+
+      <table class="table table-striped">
+        <tr>
+          <td class="text-left"><strong>Subtotal</strong></td>
+          <td class="text-right">R$&nbsp;{function="formatPrice($cart.vlsubtotal)"}</td>
+        </tr>
+        <tr>
+          <td class="text-left"><strong>Frete</strong></td>
+          <td class="text-right">R$&nbsp;{function="formatPrice($cart.vlfreight)"}</td>
+        </tr>
+        <tr>
+          <td class="text-left"><strong>Total</strong></td>
+          <td class="text-right">R$&nbsp;{function="formatPrice($cart.vltotal)"}</td>
+        </tr>
+      </table>
 
     </div>
   </div>
