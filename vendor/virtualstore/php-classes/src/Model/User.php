@@ -9,6 +9,7 @@ use \virtualstore\Mailer;
 class User extends Model {
 
     const SESSION = "User";
+    const ERROR = "UserError";
     const KEY = "ecommerce_2018_9";
 
     public static function getFromSession() {
@@ -57,37 +58,41 @@ class User extends Model {
         
 	}
 
-    public static function login($login, $password){
+    public static function login($login, $password) {
 
         $sql = new Sql();
-
-        $results = $sql->select("SELECT * FROM tb_users WHERE deslogin = :LOGIN", array(
-            ":LOGIN"=>$login
+        
+		$results = $sql->select("SELECT * FROM tb_users a INNER JOIN tb_persons b ON a.idperson = b.idperson WHERE a.deslogin = :LOGIN", array(
+			":LOGIN"=>$login
         ));
+        
+		if (count($results) === 0) {
 
-        if (count($results) === 0){
-
-            throw new \Exception("Usuário ou senha inválida.");
-
+            throw new \Exception("Usuário inexistente ou senha inválida.");
+            
         }
-
+        
         $data = $results[0];
-
-        if (password_verify($password, $data["despassword"]) === true){
+        
+		if (password_verify($password, $data["despassword"]) === true) {
 
             $user = new User();
-
+            
+            $data['desperson'] = utf8_encode($data['desperson']);
+            
             $user->setData($data);
-
+            
             $_SESSION[User::SESSION] = $user->getValues();
-
+            
             return $user;
+            
+		} else {
 
-        }else {
             throw new \Exception("Usuário inexistente ou senha inválida.");
+            
         }
-
-    }
+        
+	}
 
     public static function verifyLogin($inadmin = true) {
 
@@ -118,25 +123,31 @@ class User extends Model {
         
         $sql = new Sql();
 
-        return $sql->select("SELECT * FROM tb_users a INNER JOIN tb_persons b USING(idperson) ORDER BY b.desperson");
+        $results = $sql->select("SELECT * FROM tb_users a INNER JOIN tb_persons b USING(idperson) ORDER BY b.desperson");
+
+        foreach ($results as $key => $value) {
+            $results[$key]['desperson'] = utf8_encode($results[$key]['desperson']);
+        }
+
+        return $results;
     }
 
-    public function save(){
+    public function save() {
 
-        $sql = new Sql();
+		$sql = new Sql();
 
-        $results = $sql->select("CALL sp_users_save(:desperson, :deslogin, :despassword, :desemail, :nrphone, :inadmin)", array(
-            ":desperson"=> $this->getdesperson(),
-            ":deslogin"=> $this->getdeslogin(),
-            ":despassword"=> $this->getdespassword(),
-            ":desemail"=> $this->getdesemail(),
-            ":nrphone"=> $this->getnrphone(),
-            ":inadmin"=> $this->getinadmin()
-        ));
+		$results = $sql->select("CALL sp_users_save(:desperson, :deslogin, :despassword, :desemail, :nrphone, :inadmin)", array(
+			":desperson"=>utf8_decode($this->getdesperson()),
+			":deslogin"=>$this->getdeslogin(),
+			":despassword"=>User::getPasswordHash($this->getdespassword()),
+			":desemail"=>$this->getdesemail(),
+			":nrphone"=>$this->getnrphone(),
+			":inadmin"=>$this->getinadmin()
+		));
 
         $this->setData($results[0]);
-
-    }
+        
+	}
 
     public function get($iduser){
 
@@ -156,7 +167,7 @@ class User extends Model {
 
         $results = $sql->select("CALL sp_usersupdate_save(:iduser, :desperson, :deslogin, :despassword, :desemail, :nrphone, :inadmin)", array(
             ":iduser"=> $this->getiduser(),
-            ":desperson"=> $this->getdesperson(),
+            ":desperson"=> utf8_decode($this->getdesperson()),
             ":deslogin"=> $this->getdeslogin(),
             ":despassword"=> $this->getdespassword(),
             ":desemail"=> $this->getdesemail(),
@@ -255,14 +266,44 @@ class User extends Model {
 
     }
 
-    public function setPassword($senha){
+    public function setPassword($password){
 
         $sql = new Sql();
         $sql->query("UPDATE tb_users SET despassword = :password WHERE iduser = :iduser", array(
-            ":password"=>$senha,
-            ":iduser"=>$this->getiduser()
+            ":password" => $password,
+            ":iduser" => $this->getiduser()
         ));
 
     }
+
+    public static function setError($msg) {
+
+		$_SESSION[User::ERROR] = $msg;
+
+	}
+
+	public static function getError() {
+
+		$msg = (isset($_SESSION[User::ERROR]) && $_SESSION[User::ERROR]) ? $_SESSION[User::ERROR] : "";
+
+		User::clearError();
+
+		return $msg;
+
+	}
+
+	public static function clearError() {
+
+		$_SESSION[User::ERROR] = NULL;
+
+    }    
+
+	public static function getPasswordHash($password) {
+
+		return password_hash($password, PASSWORD_DEFAULT, [
+            'cost' => 12
+        ]);
+
+	}
     
 }

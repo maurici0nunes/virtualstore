@@ -68,7 +68,7 @@ CREATE TABLE `tb_carts` (
   PRIMARY KEY (`idcart`),
   KEY `FK_carts_users_idx` (`iduser`),
   CONSTRAINT `fk_carts_users` FOREIGN KEY (`iduser`) REFERENCES `tb_users` (`iduser`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -77,7 +77,6 @@ CREATE TABLE `tb_carts` (
 
 LOCK TABLES `tb_carts` WRITE;
 /*!40000 ALTER TABLE `tb_carts` DISABLE KEYS */;
-INSERT INTO `tb_carts` VALUES (13,'c583359e1dc57397920098212217ca6a',NULL,NULL,NULL,NULL,'2019-07-11 16:42:26');
 /*!40000 ALTER TABLE `tb_carts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -99,7 +98,7 @@ CREATE TABLE `tb_cartsproducts` (
   KEY `fk_cartsproducts_products_idx` (`idproduct`),
   CONSTRAINT `fk_cartsproducts_carts` FOREIGN KEY (`idcart`) REFERENCES `tb_carts` (`idcart`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_cartsproducts_products` FOREIGN KEY (`idproduct`) REFERENCES `tb_products` (`idproduct`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=147 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -193,7 +192,6 @@ CREATE TABLE `tb_ordersstatus` (
 
 LOCK TABLES `tb_ordersstatus` WRITE;
 /*!40000 ALTER TABLE `tb_ordersstatus` DISABLE KEYS */;
-INSERT INTO `tb_ordersstatus` VALUES (1,'Em Aberto','2017-03-13 03:00:00'),(2,'Aguardando Pagamento','2017-03-13 03:00:00'),(3,'Pago','2017-03-13 03:00:00'),(4,'Entregue','2017-03-13 03:00:00');
 /*!40000 ALTER TABLE `tb_ordersstatus` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -211,7 +209,7 @@ CREATE TABLE `tb_persons` (
   `nrphone` bigint(20) DEFAULT NULL,
   `dtregister` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`idperson`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -220,7 +218,7 @@ CREATE TABLE `tb_persons` (
 
 LOCK TABLES `tb_persons` WRITE;
 /*!40000 ALTER TABLE `tb_persons` DISABLE KEYS */;
-INSERT INTO `tb_persons` VALUES (11,'admin','tecinfomauricio@gmail.com',0,'2019-07-09 16:30:28');
+INSERT INTO `tb_persons` VALUES (19,'root','root@root.com',0,'2019-07-13 19:38:58'),(20,'Mauricio Ribeiro Nunes','tecinfomauricio@gmail.com',998700232,'2019-07-13 19:39:51');
 /*!40000 ALTER TABLE `tb_persons` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -299,7 +297,7 @@ CREATE TABLE `tb_users` (
   PRIMARY KEY (`iduser`),
   KEY `FK_users_persons_idx` (`idperson`),
   CONSTRAINT `fk_users_persons` FOREIGN KEY (`idperson`) REFERENCES `tb_persons` (`idperson`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -308,7 +306,7 @@ CREATE TABLE `tb_users` (
 
 LOCK TABLES `tb_users` WRITE;
 /*!40000 ALTER TABLE `tb_users` DISABLE KEYS */;
-INSERT INTO `tb_users` VALUES (11,11,'admin','$2y$12$kk3tykNHwIEWBPMuCSyvmubV2EhtQxNjT2HgXkYBLsPannGdy/KyC',1,'2019-07-09 16:30:28');
+INSERT INTO `tb_users` VALUES (19,19,'root','$2y$12$PQ1aVsX9INUSuMdOwkT5Mu9v8qmeum2L/KpYkP66SjVItjbYlsOLq',1,'2019-07-13 19:38:58'),(20,20,'mauricio','$2y$12$X.chkvRqj0O3Era5x9Ohx..6xXRYxUnNm3zeupTUwKoloTvCEnb2m',0,'2019-07-13 19:39:51');
 /*!40000 ALTER TABLE `tb_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -787,4 +785,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-07-11 13:52:09
+-- Dump completed on 2019-07-13 16:42:49

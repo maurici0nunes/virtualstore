@@ -40,14 +40,20 @@
 
           <ul class="nav navbar-nav navbar-right">
             <li>
-              <a href="#">Track Order</a>
+              <a href="/"><span class="glyphicon glyphicon-home"></span>&nbsp;Home</a>
+            </li>
+            {if="checkLogin(false)"}
+            <li>
+              <a href="/profile"><span class="glyphicon glyphicon-user"></span>&nbsp;{function="getUserName()"}</a>
             </li>
             <li>
-              <a href="#">Login</a>
+              <a href="/logout"><span class="glyphicon glyphicon-log-out"></span>&nbsp;Sair</a>
             </li>
+            {else}
             <li>
-              <a href="#">Signup</a>
+              <a href="/login">Login</a>
             </li>
+            {/if}
             <li>
               <a href="/cart" role="button">
                 <span class="glyphicon glyphicon-shopping-cart"></span>

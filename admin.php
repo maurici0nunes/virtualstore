@@ -106,11 +106,7 @@ $app->post('/admin/users/create', function() {
 	
 	$user =  new User();
 
-	$password = password_hash($_POST["despassword"], PASSWORD_DEFAULT, ["cost"=>12]);
-
 	$_POST["inadmin"] = (isset($_POST["inadmin"]))?1:0;
-
-	$_POST["despassword"] = $password;
 
 	$user->setData($_POST);
 
@@ -191,11 +187,9 @@ $app->post('/admin/forgot/reset', function() {
 
 	User::setForgotUsed($forgot["idrecovery"]);
 
-	$password = password_hash($_POST["password"], PASSWORD_DEFAULT, ["cost"=>12]);
-
 	$user = new User();
 	$user->get((int)$forgot["iduser"]);
-	$user->setPassword($password);
+	$user->setPassword(User::getPasswordHash($_POST["password"]));
 
 	$page = new PageAdmin([
 		"header"=>false,
