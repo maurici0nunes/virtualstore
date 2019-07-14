@@ -21,9 +21,7 @@
           <input type="password" name="password" class="form-control" placeholder="Password">
         </div>
 
-        <button class="btn btn-info" type="submit">
-          <span class="glyphicon glyphicon-log-in"></span>
-          Logar</button>
+        <button class="btn btn-info" type="submit">Logar&nbsp;<span class="glyphicon glyphicon-log-in"></span></button>
 
         <div class="checkbox">
           <label>
@@ -42,7 +40,32 @@
     <div class="col-sm-6">
       <h3>Cadastrar:</h3>
 
-      <p class="bg-danger">...</p>
+      {if="$registerError != ''"}
+      <p class="bg-danger">{$registerError}</p>
+      {/if}
+
+      <form class="form" action="/register" method="post">
+
+        <div class="form-group">
+          <label for="name">Nome:</label>
+          <input type="text" name="name" value="{$registerValues.name}" class="form-control" placeholder="Nome completo">
+        </div>
+        <div class="form-group">
+          <label for="email">E-mail:</label>
+          <input type="email" name="email" value="{$registerValues.email}" class="form-control" placeholder="exemple@domain.com">
+        </div>
+        <div class="form-group">
+          <label for="name">Telefone:</label>
+          <input type="text" name="phone" value="{$registerValues.phone}" class="form-control" placeholder="000000000">
+        </div>
+        <div class="form-group">
+          <label for="email">Senha:</label>
+          <input type="password" name="password" class="form-control" placeholder="password">
+        </div>
+        <button type="submit" class="btn btn-info">Cadastrar&nbsp;<span class="glyphicon glyphicon-floppy-disk"></span></button>
+
+      </form>
+
     </div>
 
   </div>

@@ -10,6 +10,7 @@ class User extends Model {
 
     const SESSION = "User";
     const ERROR = "UserError";
+    const REGISTER_ERROR = "RegisterError";
     const KEY = "ecommerce_2018_9";
 
     public static function getFromSession() {
@@ -157,6 +158,8 @@ class User extends Model {
             ":iduser"=>$iduser
         ));
 
+        $results[0]['desperson'] = utf8_encode($results[0]['desperson']);
+
         $this->setData($results[0]);
 
     }
@@ -296,7 +299,29 @@ class User extends Model {
 
 		$_SESSION[User::ERROR] = NULL;
 
-    }    
+    }
+
+    public static function setRegisterError($msg) {
+
+		$_SESSION[User::REGISTER_ERROR] = $msg;
+
+	}
+
+	public static function getRegisterError() {
+
+		$msg = (isset($_SESSION[User::REGISTER_ERROR]) && $_SESSION[User::REGISTER_ERROR]) ? $_SESSION[User::REGISTER_ERROR] : "";
+
+		User::clearRegisterError();
+
+		return $msg;
+
+	}
+
+	public static function clearRegisterError() {
+
+		$_SESSION[User::REGISTER_ERROR] = NULL;
+
+    }
 
 	public static function getPasswordHash($password) {
 
@@ -304,6 +329,18 @@ class User extends Model {
             'cost' => 12
         ]);
 
-	}
+    }
+    
+    public function checkLoginExists($login) {
+
+        $sql = new Sql();
+
+        $results = $sql->select("SELECT * FROM tb_users WHERE deslogin = :deslogin", [
+            ':deslogin' => $login
+        ]);
+
+        return (count($results) > 0);
+
+    }
     
 }

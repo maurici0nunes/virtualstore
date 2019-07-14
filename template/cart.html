@@ -90,8 +90,8 @@
 
   <div class="row">
     <div class="col-sm-12">
-      <form action="" method="get">
-        <input type="hidden" name="zipcode">
+      <form action="/checkout" method="get">
+        <input type="hidden" name="zipcode" value="{$cart.deszipcode}">
         <button type="submit" class="btn btn-success">Finalizar</button>
       </form>
     </div>
