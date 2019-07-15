@@ -3,7 +3,8 @@
 use \virtualstore\Model\User;
 
 function formatPrice($price){
-    return number_format($price, 2, ",", ".");
+   if (!$price > 0) $price = 0;
+   return number_format($price, 2, ",", ".");
 }
 
 function checkLogin($inadmin = true) {

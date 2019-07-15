@@ -11,7 +11,8 @@ class User extends Model {
     const SESSION = "User";
     const ERROR = "UserError";
     const REGISTER_ERROR = "RegisterError";
-    const KEY = "ecommerce_2018_9";
+    const KEY = "Secret1";
+    const KEY2 = "Secret2";
 
     public static function getFromSession() {
 
@@ -192,7 +193,7 @@ class User extends Model {
 
     }
 
-    public static function getForgot($email) {
+    public static function getForgot($email, $inadmin = true) {
 
         $sql = new Sql();
 
@@ -214,14 +215,24 @@ class User extends Model {
             ));
 
             if (count($results2) === 0){
+
                 throw new \Exception("Não foi possivel recuperar a senha");
-            }else{
+
+            } else {
+
                 $dataRecovery = $results2[0];
-                $code = base64_encode(
-                    mcrypt_encrypt(MCRYPT_RIJNDAEL_128, User::KEY, $dataRecovery["idrecovery"], MCRYPT_MODE_ECB)
-                );
-                
-                $link = "http://www.ecommerce.com/admin/forgot/reset?code=$code";
+				$code = openssl_encrypt($dataRecovery['idrecovery'], 'AES-128-CBC', pack("a16", User::KEY), 0, pack("a16", User::KEY2));
+				$code = base64_encode($code);
+
+                if ($inadmin === true) {
+
+                    $link = "http://www.ecommerce.com/admin/forgot/reset?code=$code";
+
+                } else {
+
+                    $link = "http://www.ecommerce.com/forgot/reset?code=$code";
+
+                }
 
                 $mailer = new Mailer($data["desemail"], $data["desperson"], "Redefinir senha", "forgot", array(
                     "name"=>$data["desperson"],
@@ -230,7 +241,7 @@ class User extends Model {
 
                 $mailer->send();
 
-                return $data;
+                return $link;
             }
         }
 
@@ -238,7 +249,9 @@ class User extends Model {
 
     public static function validForgotDecrypt($code){       
 
-        $idrecovery = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, User::KEY, base64_decode($code), MCRYPT_MODE_ECB);
+        $code = base64_decode($code);
+
+		$idrecovery = openssl_decrypt($code, 'AES-128-CBC', pack("a16", User::KEY), 0, pack("a16", User::KEY2));
 
         $sql = new Sql();
 

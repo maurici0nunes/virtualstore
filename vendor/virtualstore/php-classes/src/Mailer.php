@@ -6,7 +6,7 @@ use Rain\Tpl;
 
 class Mailer{
 
-    const USERNAME = "email@dominio.com";
+    const USERNAME = "email@domain.com";
     const PASSWORD  = "senha";
     const NAME_FROM = "Recuperação de senha";
 
