@@ -11,8 +11,11 @@ class User extends Model {
     const SESSION = "User";
     const ERROR = "UserError";
     const REGISTER_ERROR = "RegisterError";
-    const KEY = "Secret1";
-    const KEY2 = "Secret2";
+    const KEYTOKEN1 = "A123";
+    const KEYTOKEN2 = "B456";
+    const KEY1 = "C789";
+    const KEY2 = "D101";
+    const MSG = "Msg";
 
     public static function getFromSession() {
 
@@ -26,7 +29,7 @@ class User extends Model {
         
         return $user;
         
-	}
+    }
 
     public static function checkLogin($inadmin = true)
 	{
@@ -35,22 +38,26 @@ class User extends Model {
 			||
 			!$_SESSION[User::SESSION]
 			||
-			!(int)$_SESSION[User::SESSION]["iduser"] > 0
-		) {
+            !(int)$_SESSION[User::SESSION]["iduser"] > 0
+        ) {
 
             return false;
             
 		} else {
 
-			if ($inadmin === true && (bool)$_SESSION[User::SESSION]['inadmin'] === true) {
+            if ($_SESSION[User::SESSION]["deslogin"] === User::decryptToken($_SESSION[User::SESSION]["token"])) {
 
-                return true;
-                
-			} else if ($inadmin === false) {
+                if ($inadmin === true && (bool)$_SESSION[User::SESSION]['inadmin'] === true) {
 
-                return true;
-                
-			} else {
+                    return true;
+                    
+                } else if ($inadmin === false) {
+    
+                    return true;
+                    
+                }
+
+            } else {
 
                 return false;
                 
@@ -85,6 +92,10 @@ class User extends Model {
             $user->setData($data);
             
             $_SESSION[User::SESSION] = $user->getValues();
+
+            unset($_SESSION[User::SESSION]['despassword']);
+
+            $_SESSION[User::SESSION]['token'] = User::setToken($data['deslogin']);
             
             return $user;
             
@@ -117,7 +128,9 @@ class User extends Model {
 
     public static function logout(){
 
-        $_SESSION[User::SESSION] = NULL;
+        session_destroy();
+
+        //$_SESSION[User::SESSION] = NULL;
 
     }
 
@@ -206,9 +219,13 @@ class User extends Model {
         );
 
         if (count($results) === 0){
+
             throw new \Exception("Não foi possivel recuperar a senha");
-        }else{
+
+        } else {
+
             $data = $results[0];
+
             $results2 = $sql->select("CALL sp_userspasswordsrecoveries_create(:iduser, :desip)", array(
                 ":iduser"=>$data["iduser"],
                 ":desip"=>$_SERVER["REMOTE_ADDR"]
@@ -221,7 +238,7 @@ class User extends Model {
             } else {
 
                 $dataRecovery = $results2[0];
-				$code = openssl_encrypt($dataRecovery['idrecovery'], 'AES-128-CBC', pack("a16", User::KEY), 0, pack("a16", User::KEY2));
+				$code = openssl_encrypt($dataRecovery['idrecovery'], 'AES-128-CBC', pack("a16", User::KEY1), 0, pack("a16", User::KEY2));
 				$code = base64_encode($code);
 
                 if ($inadmin === true) {
@@ -251,7 +268,7 @@ class User extends Model {
 
         $code = base64_decode($code);
 
-		$idrecovery = openssl_decrypt($code, 'AES-128-CBC', pack("a16", User::KEY), 0, pack("a16", User::KEY2));
+		$idrecovery = openssl_decrypt($code, 'AES-128-CBC', pack("a16", User::KEY1), 0, pack("a16", User::KEY2));
 
         $sql = new Sql();
 
@@ -306,11 +323,33 @@ class User extends Model {
 
 		return $msg;
 
-	}
+    }
 
 	public static function clearError() {
 
 		$_SESSION[User::ERROR] = NULL;
+
+    }
+
+    public static function setMsg($msg) {
+
+		$_SESSION[User::MSG] = $msg;
+
+	}
+
+	public static function getMsg() {
+
+		$msg = (isset($_SESSION[User::MSG]) && $_SESSION[User::MSG]) ? $_SESSION[User::MSG] : "";
+
+		User::clearMsg();
+
+		return $msg;
+
+    }
+    
+    public static function clearMsg() {
+
+		$_SESSION[User::MSG] = NULL;
 
     }
 
@@ -353,6 +392,36 @@ class User extends Model {
         ]);
 
         return (count($results) > 0);
+
+    }
+
+    public static function setToken($login) {
+
+        $token = openssl_encrypt($login, 'AES-128-CBC', pack("a16", User::KEYTOKEN1), 0, pack("a16", User::KEYTOKEN2));
+        $token = base64_encode($token);
+        
+        return $token;
+
+    }
+
+    public static function decryptToken($token) {
+
+        $token = base64_decode($token);
+        $token = openssl_decrypt($token, 'AES-128-CBC', pack("a16", User::KEYTOKEN1), 0, pack("a16", User::KEYTOKEN2));
+        
+        return $token;
+
+    }
+
+    public static function updateSessionValues($data) {
+
+        foreach ($data as $key => $value) {
+
+            $_SESSION[User::SESSION][$key] = $value;
+
+        }
+
+        unset($_SESSION[User::SESSION]["despassword"]);
 
     }
     
