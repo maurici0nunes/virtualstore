@@ -1,6 +1,7 @@
 <?php
 
 use \virtualstore\Model\User;
+use \virtualstore\Model\Cart;
 
 function formatPrice($price){
    if (!$price > 0) $price = 0;
@@ -14,4 +15,10 @@ function checkLogin($inadmin = true) {
 function getUserName() {
    $user = User::getFromSession();
    return $user->getdesperson();
+}
+
+function getCartNrQtd() {
+   $cart = Cart::getFromSession();
+   $total = $cart->getProductsTotals();
+   return $total['nrqtd'];
 }
