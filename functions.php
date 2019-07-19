@@ -22,3 +22,7 @@ function getCartNrQtd() {
    $total = $cart->getProductsTotals();
    return $total['nrqtd'];
 }
+
+function formatDate($date) {
+   return date("d/m/y", strtotime($date));
+}
