@@ -51,23 +51,12 @@ $app->get("/admin/users", function () {
 	$page = (isset($_GET['page'])) ? (int) $_GET['page'] : 1;
 
 	if ($search != '') {
-		$pagination = User::getPageSearch($search, $page, 2);
+		$pagination = User::getPageSearch($search, $page, 3);
 	} else {
-		$pagination = User::getPage($page, 2);
+		$pagination = User::getPage($page, 3);
 	}
 
-	$pages = [];
-
-	for ($p = 0; $p < $pagination['pages']; $p++) {
-
-		array_push($pages, [
-			'href' => '/admin/users?' . http_build_query([
-				'page' => $p+1,
-				'search' => $search
-			]),
-			'text' => $p+1
-		]);
-	}
+	$pages = User::pagination($pagination, $page, 5, $search);
 
 	$page = new PageAdmin();
 
