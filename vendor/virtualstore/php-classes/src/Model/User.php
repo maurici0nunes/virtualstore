@@ -12,8 +12,6 @@ class User extends Model
     const SESSION = "User";
     const ERROR = "UserError";
     const REGISTER_ERROR = "RegisterError";
-    const KEYTOKEN1 = "A123";
-    const KEYTOKEN2 = "B456";
     const KEY1 = "C789";
     const KEY2 = "D101";
     const MSG = "Msg";
@@ -44,7 +42,7 @@ class User extends Model
             return false;
         } else {
 
-            if ($_SESSION[User::SESSION]["deslogin"] === User::decryptToken($_SESSION[User::SESSION]["token"])) {
+            if ($_SESSION[User::SESSION]['owner'] === User::setSessionOwner()) {
 
                 if ($inadmin === true && (bool) $_SESSION[User::SESSION]['inadmin'] === true) {
 
@@ -58,6 +56,14 @@ class User extends Model
                 return false;
             }
         }
+    }
+
+    public static function setSessionOwner()
+    {
+
+        $owner = md5('owner' . $_SERVER['REMOTE_ADDR'] . $_SERVER['HTTP_USER_AGENT']);
+
+        return $owner;
     }
 
     public static function login($login, $password)
@@ -88,7 +94,7 @@ class User extends Model
 
             unset($_SESSION[User::SESSION]['despassword']);
 
-            $_SESSION[User::SESSION]['token'] = User::setToken($data['deslogin']);
+            $_SESSION[User::SESSION]['owner'] = User::setSessionOwner();
 
             return $user;
         } else {
@@ -105,12 +111,12 @@ class User extends Model
             if ($inadmin) {
 
                 header("Location: /admin/login");
+                exit;
             } else {
 
                 header("Location: /login");
+                exit;
             }
-
-            exit;
         }
     }
 
@@ -118,8 +124,6 @@ class User extends Model
     {
 
         session_destroy();
-
-        //$_SESSION[User::SESSION] = NULL;
 
     }
 
@@ -382,24 +386,6 @@ class User extends Model
         return (count($results) > 0);
     }
 
-    public static function setToken($login)
-    {
-
-        $token = openssl_encrypt($login, 'AES-128-CBC', pack("a16", User::KEYTOKEN1), 0, pack("a16", User::KEYTOKEN2));
-        $token = base64_encode($token);
-
-        return $token;
-    }
-
-    public static function decryptToken($token)
-    {
-
-        $token = base64_decode($token);
-        $token = openssl_decrypt($token, 'AES-128-CBC', pack("a16", User::KEYTOKEN1), 0, pack("a16", User::KEYTOKEN2));
-
-        return $token;
-    }
-
     public static function updateSessionValues($data)
     {
 
@@ -468,8 +454,8 @@ class User extends Model
             WHERE b.desperson LIKE :search OR b.desemail = :search OR a.deslogin LIKE :search
             ORDER BY b.desperson
             LIMIT $start, $itemsPerPage;
-        ",[
-            ':search' => '%'.$search.'%'
+        ", [
+            ':search' => '%' . $search . '%'
         ]);
 
         $resultTotal = $sql->select("SELECT FOUND_ROWS() AS nrtotal;");

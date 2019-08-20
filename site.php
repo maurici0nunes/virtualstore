@@ -277,6 +277,8 @@ $app->post("/login", function(){
 	} catch(Exception $e) {
 
 		User::setError($e->getMessage());
+		header("Location: /login");
+		exit;
 
 	}
 

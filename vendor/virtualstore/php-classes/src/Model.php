@@ -55,8 +55,6 @@ class Model
             $end = $pagination['pages'];
         }
 
-        echo $pagination['pages'];
-
         if ($currentpage - $lshowbtn > 0) {
             array_push($pages, [
                 'href' => '/admin/users?' . http_build_query([
